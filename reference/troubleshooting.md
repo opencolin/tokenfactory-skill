@@ -4,8 +4,9 @@
 |---|---|---|
 | `401 Unauthorized` | Missing/expired key, or key not yet approved | Re-copy the key from the dashboard; confirm credits approved at https://dev.nebius.com/builders; ensure `Authorization: Bearer $NEBIUS_API_KEY`. |
 | `404` / "model not found" | Wrong model ID or casing | Call `GET /models` and copy the exact ID (e.g. `nvidia/nemotron-3-super-120b-a12b`). |
-| Connection errors / wrong host | Wrong base URL | Use the OpenAI-compatible base URL from your dashboard (commonly `https://api.studio.nebius.com/v1/`); include the trailing `/v1/`. |
+| Connection errors / wrong host | Wrong base URL | Use the OpenAI-compatible base URL from your dashboard (`https://api.tokenfactory.nebius.com/v1`; older docs may show `https://api.studio.nebius.com/v1`); include the `/v1` path, no trailing slash. |
 | Helper expects `OPENAI_API_KEY` | Tool only reads OpenAI vars | Set `OPENAI_API_KEY=$NEBIUS_API_KEY` and `OPENAI_BASE_URL=$NEBIUS_BASE_URL`. |
+| Key worked earlier, gone in a new terminal | `export` only lasts for that session | Persist it: `echo 'export NEBIUS_API_KEY="your-key-here"' >> ~/.zshrc` (macOS) or `>> ~/.bashrc` (Linux), then open a new terminal or `source` the file. |
 | `429` / rate limit | Too many concurrent requests | Add retry with backoff; cap concurrency (semaphore); use the Batch API for bulk evals. |
 | Context length exceeded | Oversized tool results in history | Summarize/paginate results; pass artifact references not raw rows; trim old tool messages. |
 | Model returns invalid tool-call JSON | Occasional malformed args | `try/except` around `json.loads`; on failure return an error tool-result so the model retries. |

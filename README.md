@@ -9,16 +9,25 @@ setting a **base URL**, an **API key**, and a **model name** — then let your m
 
 > **TL;DR**
 > ```bash
-> export NEBIUS_API_KEY="..."                    # from https://dev.nebius.com/builders
-> export NEBIUS_BASE_URL="https://api.studio.nebius.com/v1/"   # confirm in dashboard
+> export NEBIUS_API_KEY="your-key-here"          # from https://dev.nebius.com/builders
+> export NEBIUS_BASE_URL="https://api.tokenfactory.nebius.com/v1"   # confirm in dashboard
+>
+> # Persist across sessions:
+> echo 'export NEBIUS_API_KEY="your-key-here"' >> ~/.zshrc    # macOS
+> echo 'export NEBIUS_API_KEY="your-key-here"' >> ~/.bashrc   # Linux
+>
 > # model: nvidia/nemotron-3-super-120b-a12b
 > ```
+>
+> New to Token Factory? `SKILL.md` §1 walks you from zero (get a key, store it securely,
+> verify with one curl). Using Claude Code or Codex? See `reference/api.md` → "CLI routing".
 
 ## What's here
 
 ```
 tokenfactory-skill/
 ├── SKILL.md                        # start here — the skill entry point
+├── .env.example                    # env vars template (Nebius + CRAFT)
 ├── reference/
 │   ├── api.md                      # endpoints, auth, curl/Python/JS, LiteLLM, LangChain, CLI routing
 │   ├── models.md                   # recommended models + IDs (Nemotron-3 Super 120B)

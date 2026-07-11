@@ -2,12 +2,14 @@
 name: tokenfactory
 description: >-
   Use Nebius Token Factory for LLM inference in the Emergence × Nebius Enterprise
-  Agent Hackathon. Covers getting an API key/credits, the OpenAI-compatible
-  endpoint, recommended models (Nemotron-3 Super 120B), function/tool calling to
-  drive CRAFT MCP tools, streaming, batch, embeddings, LiteLLM/LangChain/LangGraph
-  wiring, and troubleshooting. Trigger whenever an agent needs to call an LLM,
-  configure inference, pick a model, do function calling, or connect its
-  reasoning model to the CRAFT data platform during the hackathon.
+  Agent Hackathon. Covers first-time setup (getting an API key/credits, storing
+  the key securely in the shell), the OpenAI-compatible endpoint, picking a model
+  (Nemotron-3 Super 120B default), function/tool calling to drive CRAFT MCP tools,
+  streaming, batch, embeddings, LiteLLM/LangChain/LangGraph wiring, routing Claude
+  Code or the Codex CLI through a proxy, and troubleshooting. Trigger whenever a
+  user is new to Token Factory, needs an API key set up, needs to call an LLM,
+  configure inference, pick a model, do function calling, wire up Claude Code or
+  Codex, or connect a reasoning model to the CRAFT data platform.
 ---
 
 # Nebius Token Factory — Skill
@@ -26,14 +28,38 @@ those to **CRAFT's MCP tools** (`get_schema`, `generate_sql`, `execute_query`,
 
 ## 1. Get access (do this first)
 
+New to Token Factory? It's three steps: **get a key → store it securely → make one test call.**
+If the user doesn't have a key yet, walk them through this section before anything else.
+
 1. Claim credits at **https://dev.nebius.com/builders** (apply early — approval can lag).
-2. Copy your **API key** and the **base URL** from the Token Factory dashboard.
-3. Export it:
+2. Log in to the Token Factory dashboard and create/copy your **API key**.
+3. Store it as an environment variable — **never hardcode it in source code, never commit it**:
+
    ```bash
+   # Add an environment variable for your API key to store it locally.
+   # Copy-paste this into your terminal and insert your API key:
    export NEBIUS_API_KEY="your-key-here"
-   # OpenAI-compatible base URL (confirm the exact value in your dashboard):
-   export NEBIUS_BASE_URL="https://api.studio.nebius.com/v1/"
+   export NEBIUS_BASE_URL="https://api.tokenfactory.nebius.com/v1"
+
+   # Persist across sessions:
+   echo 'export NEBIUS_API_KEY="your-key-here"' >> ~/.zshrc    # macOS (default shell: zsh)
+   echo 'export NEBIUS_API_KEY="your-key-here"' >> ~/.bashrc   # Linux (bash)
+   # Then open a new terminal, or reload now: source ~/.zshrc  (or: source ~/.bashrc)
    ```
+
+   Per-project alternative: `cp .env.example .env` and fill in the key — `.env` is gitignored here.
+
+4. Verify it works (should print a JSON list of models):
+
+   ```bash
+   curl -s "$NEBIUS_BASE_URL/models" -H "Authorization: Bearer $NEBIUS_API_KEY" | head
+   ```
+
+   If it errors, see `reference/troubleshooting.md` (401 = key/credits issue, connection error = base URL).
+
+**Key safety:** treat the key like a password. Don't paste it into chats, issues, or shared docs;
+don't commit it (this repo's `.gitignore` already excludes `.env`); if it leaks, revoke it in the
+dashboard and create a new one.
 
 > If a helper wants `OPENAI_API_KEY` / `OPENAI_BASE_URL` (many do), set those to the Nebius values.
 
@@ -60,6 +86,10 @@ embeddings — is standard OpenAI-shaped and documented in `reference/api.md`.
 
 ## 3. Which model?
 
+**New to this? Don't agonize — use the default below and move on; you can switch any time**
+(it's just the `model` string). To see everything available on your account:
+`curl -s "$NEBIUS_BASE_URL/models" -H "Authorization: Bearer $NEBIUS_API_KEY"`.
+
 - **Default for agents / tool use:** `nvidia/nemotron-3-super-120b-a12b`
   (Nemotron-3 Super 120B, ~12B active, 1M context, **native function calling**).
 - Token Factory hosts many open models (Llama, Qwen, DeepSeek, Kimi, etc.). Pick the smallest
@@ -72,12 +102,23 @@ The whole game is: model proposes a tool call → you run the CRAFT MCP tool →
 Minimal loop and a full LangGraph example: `reference/function-calling.md` and
 `examples/function_calling_craft.py`.
 
-## 5. Framework wiring (pick your stack)
+## 5. Identify the user's stack, then wire it
 
-- **OpenAI SDK** — set `base_url` + `api_key` (above).
-- **LiteLLM** — `model="nebius/nvidia/nemotron-3-super-120b-a12b"`, `NEBIUS_API_KEY` set.
-- **LangChain / LangGraph** — `ChatOpenAI(base_url=..., api_key=..., model=...)`.
-- **Claude Code / Codex CLI** — route through a proxy (see `reference/api.md` → "CLI routing").
+Before giving setup instructions, figure out which of these the user is on — ask if it isn't
+obvious from context ("Are you writing your own agent in Python/JS, or using Claude Code or
+the Codex CLI?"). The setup differs:
+
+| Stack | Wiring |
+|---|---|
+| **Own agent — OpenAI SDK (Python/JS)** | No proxy needed. Set `base_url` + `api_key` from the env vars in §1 (snippet in §2). |
+| **Own agent — LiteLLM** | `model="nebius/nvidia/nemotron-3-super-120b-a12b"`, reads `NEBIUS_API_KEY` from env. |
+| **Own agent — LangChain / LangGraph** | `ChatOpenAI(base_url=..., api_key=..., model=...)`. |
+| **Claude Code** | Claude Code speaks Anthropic's `/v1/messages`, not OpenAI — route through a local proxy. See `reference/api.md` → "CLI routing". |
+| **Codex CLI** | Same proxy, plus `~/.codex/config.toml` with `wire_api = "responses"`. Config example in `reference/api.md` → "CLI routing". |
+
+**Secure key handling on every path:** the key lives in the `NEBIUS_API_KEY` environment
+variable (§1). CLI configs should reference it via `env_key` (Codex) or the proxy's environment —
+never paste the raw key into a config file, script, or repo.
 
 Copy-paste snippets for each: `reference/api.md`. Runnable examples: `examples/`.
 

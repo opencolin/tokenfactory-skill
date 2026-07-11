@@ -7,7 +7,7 @@ loaded via langchain-mcp-adapters.
 Setup:
     pip install langgraph langchain-openai langchain-mcp-adapters
     export NEBIUS_API_KEY="your-key"
-    export NEBIUS_BASE_URL="https://api.studio.nebius.com/v1/"
+    export NEBIUS_BASE_URL="https://api.tokenfactory.nebius.com/v1"
     export CRAFT_MCP_URL="https://craft.emergence.ai/mcp"   # from the hackathon guide
     export CRAFT_API_KEY="your-craft-key"
 """
@@ -17,7 +17,7 @@ from langgraph.prebuilt import create_react_agent
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
 llm = ChatOpenAI(
-    base_url=os.environ.get("NEBIUS_BASE_URL", "https://api.studio.nebius.com/v1/"),
+    base_url=os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
     api_key=os.environ["NEBIUS_API_KEY"],
     model="nvidia/nemotron-3-super-120b-a12b",
     temperature=0.2,

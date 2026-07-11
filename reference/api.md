@@ -6,14 +6,14 @@ Token Factory is **OpenAI-compatible**. If a tool speaks OpenAI, point it at Neb
 
 | Setting | Value |
 |---|---|
-| Base URL | `https://api.studio.nebius.com/v1/` *(confirm the exact value in your Token Factory dashboard)* |
+| Base URL | `https://api.tokenfactory.nebius.com/v1` *(confirm the exact value in your Token Factory dashboard)* |
 | Auth | `Authorization: Bearer $NEBIUS_API_KEY` |
 | API key | From the dashboard / https://dev.nebius.com/builders |
 | Wire format | OpenAI Chat Completions (`/chat/completions`), Embeddings (`/embeddings`), Batch, Models (`/models`) |
 
 ```bash
 export NEBIUS_API_KEY="your-key"
-export NEBIUS_BASE_URL="https://api.studio.nebius.com/v1/"
+export NEBIUS_BASE_URL="https://api.tokenfactory.nebius.com/v1"
 ```
 
 ## curl
@@ -78,7 +78,7 @@ r = client.chat.completions.create(
 ```js
 import OpenAI from "openai";
 const client = new OpenAI({
-  baseURL: process.env.NEBIUS_BASE_URL,   // https://api.studio.nebius.com/v1/
+  baseURL: process.env.NEBIUS_BASE_URL,   // https://api.tokenfactory.nebius.com/v1
   apiKey: process.env.NEBIUS_API_KEY,
 });
 const r = await client.chat.completions.create({
@@ -129,7 +129,21 @@ that translates `/v1/messages` (Claude) and `/v1/responses` (Codex) to OpenAI ca
   https://github.com/opencolin/claude-codex-nebius-proxy
 - Lighter alternatives: `claude-code-router`, or the LiteLLM proxy's Anthropic surface.
 
-Codex `~/.codex/config.toml` example (via the proxy):
+Not sure which CLI the user has? `claude --version` / `codex --version` in their terminal —
+whichever answers is what they're running. The two are configured differently:
+
+### Claude Code (Anthropic wire format)
+
+1. Store the key in your shell (see SKILL.md §1): `export NEBIUS_API_KEY="..."` — persist it
+   in `~/.zshrc` (macOS) or `~/.bashrc` (Linux).
+2. Run the proxy locally (it reads `NEBIUS_API_KEY` from the environment — follow the proxy's
+   README for the exact start command and port).
+3. Point Claude Code at the proxy, e.g. `export ANTHROPIC_BASE_URL="http://127.0.0.1:8082"`
+   (exact variable/port per the proxy's README).
+
+### Codex CLI (Responses wire format)
+
+Same proxy, then reference the key **indirectly** via `env_key` in `~/.codex/config.toml`:
 
 ```toml
 model = "nebius/moonshotai/Kimi-K2.6"
@@ -140,6 +154,11 @@ base_url = "http://127.0.0.1:8083/v1"
 env_key = "OPENAI_API_KEY"
 wire_api = "responses"
 ```
+
+Set `OPENAI_API_KEY=$NEBIUS_API_KEY` in the shell so `env_key` resolves.
+
+**Security on both paths:** the key only ever lives in environment variables. Never write the
+raw key into `config.toml`, launch scripts, or anything that could be committed or shared.
 
 ## Notes
 

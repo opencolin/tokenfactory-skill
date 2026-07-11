@@ -24,6 +24,7 @@ the model emits a tool call, you invoke the matching CRAFT MCP tool.
 Minimal MCP client (Python `mcp` package):
 
 ```python
+from contextlib import asynccontextmanager
 from mcp import ClientSession
 from mcp.client.sse import sse_client   # or stdio_client, depending on CRAFT's transport
 import os
@@ -32,15 +33,20 @@ import os
 CRAFT_MCP_URL = os.environ["CRAFT_MCP_URL"]      # e.g. https://craft.emergence.ai/mcp
 CRAFT_API_KEY = os.environ["CRAFT_API_KEY"]
 
+@asynccontextmanager
 async def craft_session():
     async with sse_client(CRAFT_MCP_URL, headers={"Authorization": f"Bearer {CRAFT_API_KEY}"}) as (r, w):
         async with ClientSession(r, w) as session:
             await session.initialize()
-            tools = await session.list_tools()      # discover real tool names/params
-            return session, tools
-```
+            yield session
 
-Then: `await session.call_tool(name, arguments)` inside your model loop.
+async def main():
+    # The session dies when its context exits — keep the whole model loop inside it.
+    async with craft_session() as session:
+        tools = await session.list_tools()          # discover real tool names/params
+        ...                                          # run your model loop here:
+        # result = await session.call_tool(name, arguments)
+```
 
 ### B) Framework MCP adapter (least glue)
 Frameworks like LangGraph / LangChain can load MCP tools directly and bind them to a
@@ -69,7 +75,7 @@ OpenAI `tools` array from that, so names/params match the live server.
 ```bash
 # Inference (Nebius Token Factory)
 export NEBIUS_API_KEY="..."
-export NEBIUS_BASE_URL="https://api.studio.nebius.com/v1/"
+export NEBIUS_BASE_URL="https://api.tokenfactory.nebius.com/v1"
 # Data (CRAFT over MCP) — values from the hackathon guide / your account
 export CRAFT_MCP_URL="https://craft.emergence.ai/mcp"
 export CRAFT_API_KEY="..."
