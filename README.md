@@ -29,12 +29,14 @@ tokenfactory-skill/
 ├── SKILL.md                        # start here — the skill entry point
 ├── .env.example                    # env vars template (Nebius + CRAFT)
 ├── reference/
-│   ├── api.md                      # endpoints, auth, curl/Python/JS, LiteLLM, LangChain, CLI routing
+│   ├── signup-help.md              # signup gotchas: Gmail block, promo emails, hidden key button
+│   ├── api.md                      # endpoints, auth, curl/Python/JS, LiteLLM, LangChain, OpenCode, CLI routing
 │   ├── models.md                   # recommended models + IDs (Nemotron-3 Super 120B)
 │   ├── function-calling.md         # tool-calling loop → CRAFT MCP
 │   ├── batch-and-embeddings.md     # batch evals + embeddings for RAG
 │   ├── craft-integration.md        # CRAFT-over-MCP + Token Factory, end to end
 │   ├── proxy-setup.md              # install claude-codex-nebius-proxy (Claude Code / Codex)
+│   ├── cookbooks.md                # discover examples: cookbooks + task-to-recipe map
 │   └── troubleshooting.md          # common errors & fixes
 └── examples/
     ├── quickstart_openai.py        # first call (OpenAI SDK)
@@ -59,9 +61,11 @@ files on demand.
 ## Related (Nebius ecosystem)
 
 - **Token Factory Cookbook** (50 recipes): https://github.com/nebius/token-factory-cookbook
+- **Browsable cookbook mirror** (all notebooks rendered with outputs, filter/search):
+  https://opencolin.github.io/nebius-ecosystem-cookbook/cookbook/
 - **nebius-devsite** — open-source projects from past hackathons: https://github.com/opencolin/nebius-devsite
 - **awesome-nebius**: https://github.com/opencolin/awesome-nebius
-- **nebius-ecosystem-cookbook**: https://github.com/opencolin/nebius-ecosystem-cookbook
+- **nebius-ecosystem-cookbook** (source for the mirror): https://github.com/opencolin/nebius-ecosystem-cookbook
 - **claude-codex-nebius-proxy** (route Claude Code/Codex → Nebius): https://github.com/opencolin/claude-codex-nebius-proxy
 - **openclaw-nebius-plugin**: https://github.com/opencolin/openclaw-nebius-plugin
 

@@ -2,6 +2,11 @@
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
+| Signup rejects your email | gmail.com is blocked (anti-fraud) | Use a work/school/non-Gmail address. Gmail-only? Ask event staff or Slack `#help` for a direct promo code. See `signup-help.md`. |
+| Signup form won't load | Form is intermittently flaky | Refresh, try incognito/another browser, retry in a few minutes; ask `#help` for the backup form. |
+| No promo-code email | Delivery is unreliable (especially from the backup form) | Check spam; wait ~10 min; then ask in `#help` — at events, staff carry spare codes. |
+| "Promo code exhausted" email | That's **AI Cloud** — a different product you don't need | Ignore it. The Token Factory "here's your code" email is the one that matters. See `signup-help.md`. |
+| Can't find "Get API Key" in the dashboard | Button sits off-screen at narrow window widths | Maximize/widen the browser window. |
 | `401 Unauthorized` | Missing/expired key, or key not yet approved | Re-copy the key from the dashboard; confirm credits approved at https://dev.nebius.com/builders; ensure `Authorization: Bearer $NEBIUS_API_KEY`. |
 | `404` / "model not found" | Wrong model ID or casing | Call `GET /models` and copy the exact ID (e.g. `nvidia/nemotron-3-super-120b-a12b`). |
 | Connection errors / wrong host | Wrong base URL | Use the OpenAI-compatible base URL from your dashboard (`https://api.tokenfactory.nebius.com/v1`; older docs may show `https://api.studio.nebius.com/v1`); include the `/v1` path, no trailing slash. |
@@ -11,7 +16,7 @@
 | Context length exceeded | Oversized tool results in history | Summarize/paginate results; pass artifact references not raw rows; trim old tool messages. |
 | Model returns invalid tool-call JSON | Occasional malformed args | `try/except` around `json.loads`; on failure return an error tool-result so the model retries. |
 | Model writes SQL instead of calling `generate_sql` | Weak system prompt | Instruct explicitly: "Always use `generate_sql`; never hand-write SQL." Consider `tool_choice` to force it. |
-| Claude Code / Codex won't use Nebius | CLIs are Anthropic-shaped | Route through a proxy (`opencolin/claude-codex-nebius-proxy`, `claude-code-router`, or LiteLLM proxy) — install walkthrough in `proxy-setup.md`. |
+| Claude Code / Codex won't use Nebius | CLIs are Anthropic-shaped | Route through a proxy (`opencolin/claude-codex-nebius-proxy`, `claude-code-router`, or LiteLLM proxy) — install walkthrough in `proxy-setup.md`. (OpenCode needs no proxy — see `api.md` → "OpenCode".) |
 | Streaming shows nothing | Consuming deltas wrong | Read `chunk.choices[0].delta.content` (may be `None` on some chunks). |
 
 ## Fast sanity check

@@ -120,6 +120,18 @@ llm = ChatOpenAI(
 
 Bind CRAFT MCP tools with `llm.bind_tools([...])` — see `function-calling.md`.
 
+## OpenCode
+
+OpenCode needs **no proxy** — Nebius Token Factory is one of its built-in providers:
+
+1. Have your API key ready (SKILL.md §1).
+2. In OpenCode, run **`/connect`** and search for **"Nebius Token Factory"**.
+3. Paste your API key when prompted (it's stored by OpenCode's credential store — don't
+   put it in `opencode.json`).
+4. Run **`/models`** and pick a model (e.g. Nemotron or Kimi).
+
+Full provider docs: https://opencode.ai/docs/providers/
+
 ## CLI routing (Claude Code / Codex)
 
 Token Factory is not Anthropic-shaped, so the Claude Code and Codex CLIs need a small proxy
