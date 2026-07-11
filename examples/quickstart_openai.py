@@ -3,7 +3,7 @@
 Setup:
     pip install openai
     export NEBIUS_API_KEY="your-key"
-    export NEBIUS_BASE_URL="https://api.studio.nebius.com/v1/"  # confirm in dashboard
+    export NEBIUS_BASE_URL="https://api.tokenfactory.nebius.com/v1"  # confirm in dashboard
 Run:
     python quickstart_openai.py
 """
@@ -11,7 +11,7 @@ import os
 from openai import OpenAI
 
 client = OpenAI(
-    base_url=os.environ.get("NEBIUS_BASE_URL", "https://api.studio.nebius.com/v1/"),
+    base_url=os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
     api_key=os.environ["NEBIUS_API_KEY"],
 )
 

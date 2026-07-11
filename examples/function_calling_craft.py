@@ -7,13 +7,13 @@ are illustrative — discover the real ones from CRAFT with list_tools() at runt
 Setup:
     pip install openai
     export NEBIUS_API_KEY="your-key"
-    export NEBIUS_BASE_URL="https://api.studio.nebius.com/v1/"
+    export NEBIUS_BASE_URL="https://api.tokenfactory.nebius.com/v1"
 """
 import os, json
 from openai import OpenAI
 
 client = OpenAI(
-    base_url=os.environ.get("NEBIUS_BASE_URL", "https://api.studio.nebius.com/v1/"),
+    base_url=os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
     api_key=os.environ["NEBIUS_API_KEY"],
 )
 MODEL = "nvidia/nemotron-3-super-120b-a12b"
