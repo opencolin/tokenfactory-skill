@@ -129,17 +129,23 @@ that translates `/v1/messages` (Claude) and `/v1/responses` (Codex) to OpenAI ca
   https://github.com/opencolin/claude-codex-nebius-proxy
 - Lighter alternatives: `claude-code-router`, or the LiteLLM proxy's Anthropic surface.
 
+**Full install walkthrough (TUI installer, manual setup, both CLIs): `proxy-setup.md`.**
+The short version:
+
 Not sure which CLI the user has? `claude --version` / `codex --version` in their terminal —
 whichever answers is what they're running. The two are configured differently:
 
 ### Claude Code (Anthropic wire format)
 
-1. Store the key in your shell (see SKILL.md §1): `export NEBIUS_API_KEY="..."` — persist it
-   in `~/.zshrc` (macOS) or `~/.bashrc` (Linux).
-2. Run the proxy locally (it reads `NEBIUS_API_KEY` from the environment — follow the proxy's
-   README for the exact start command and port).
-3. Point Claude Code at the proxy, e.g. `export ANTHROPIC_BASE_URL="http://127.0.0.1:8082"`
-   (exact variable/port per the proxy's README).
+1. Store the key in your shell (see SKILL.md §1) and mirror it for the proxy:
+   `export OPENAI_API_KEY="$NEBIUS_API_KEY"` (the proxy reads `OPENAI_API_KEY`).
+2. Install and start the proxy — clone the repo and run `./install.sh` (see `proxy-setup.md`).
+   It listens on port **8083**; http://localhost:8083/dashboard confirms it's up.
+3. Launch Claude Code through it:
+   ```bash
+   ANTHROPIC_BASE_URL=http://localhost:8083 ANTHROPIC_AUTH_TOKEN=claude-local claude
+   ```
+   (`claude-local` is a placeholder — the real key stays in the proxy's environment.)
 
 ### Codex CLI (Responses wire format)
 
@@ -155,7 +161,8 @@ env_key = "OPENAI_API_KEY"
 wire_api = "responses"
 ```
 
-Set `OPENAI_API_KEY=$NEBIUS_API_KEY` in the shell so `env_key` resolves.
+Set `OPENAI_API_KEY=$NEBIUS_API_KEY` in the shell so `env_key` resolves. (Using the Codex
+**desktop app**? It doesn't inherit shell exports — see `proxy-setup.md` for the `launchctl` fix.)
 
 **Security on both paths:** the key only ever lives in environment variables. Never write the
 raw key into `config.toml`, launch scripts, or anything that could be committed or shared.

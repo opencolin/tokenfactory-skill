@@ -34,6 +34,7 @@ tokenfactory-skill/
 │   ├── function-calling.md         # tool-calling loop → CRAFT MCP
 │   ├── batch-and-embeddings.md     # batch evals + embeddings for RAG
 │   ├── craft-integration.md        # CRAFT-over-MCP + Token Factory, end to end
+│   ├── proxy-setup.md              # install claude-codex-nebius-proxy (Claude Code / Codex)
 │   └── troubleshooting.md          # common errors & fixes
 └── examples/
     ├── quickstart_openai.py        # first call (OpenAI SDK)

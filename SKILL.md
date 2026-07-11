@@ -5,8 +5,9 @@ description: >-
   Agent Hackathon. Covers first-time setup (getting an API key/credits, storing
   the key securely in the shell), the OpenAI-compatible endpoint, picking a model
   (Nemotron-3 Super 120B default), function/tool calling to drive CRAFT MCP tools,
-  streaming, batch, embeddings, LiteLLM/LangChain/LangGraph wiring, routing Claude
-  Code or the Codex CLI through a proxy, and troubleshooting. Trigger whenever a
+  streaming, batch, embeddings, LiteLLM/LangChain/LangGraph wiring, installing the
+  claude-codex-nebius-proxy to route Claude Code or the Codex CLI, and
+  troubleshooting. Trigger whenever a
   user is new to Token Factory, needs an API key set up, needs to call an LLM,
   configure inference, pick a model, do function calling, wire up Claude Code or
   Codex, or connect a reasoning model to the CRAFT data platform.
@@ -113,8 +114,8 @@ the Codex CLI?"). The setup differs:
 | **Own agent — OpenAI SDK (Python/JS)** | No proxy needed. Set `base_url` + `api_key` from the env vars in §1 (snippet in §2). |
 | **Own agent — LiteLLM** | `model="nebius/nvidia/nemotron-3-super-120b-a12b"`, reads `NEBIUS_API_KEY` from env. |
 | **Own agent — LangChain / LangGraph** | `ChatOpenAI(base_url=..., api_key=..., model=...)`. |
-| **Claude Code** | Claude Code speaks Anthropic's `/v1/messages`, not OpenAI — route through a local proxy. See `reference/api.md` → "CLI routing". |
-| **Codex CLI** | Same proxy, plus `~/.codex/config.toml` with `wire_api = "responses"`. Config example in `reference/api.md` → "CLI routing". |
+| **Claude Code** | Claude Code speaks Anthropic's `/v1/messages`, not OpenAI — route through a local proxy. Install walkthrough: `reference/proxy-setup.md`; quick reference: `reference/api.md` → "CLI routing". |
+| **Codex CLI** | Same proxy, plus `~/.codex/config.toml` with `wire_api = "responses"`. Install walkthrough: `reference/proxy-setup.md`. |
 
 **Secure key handling on every path:** the key lives in the `NEBIUS_API_KEY` environment
 variable (§1). CLI configs should reference it via `env_key` (Codex) or the proxy's environment —
@@ -136,6 +137,7 @@ rate limits, tool-call JSON issues, and context-length errors.
 | `reference/function-calling.md` | Tool-calling loop, schema format, dispatching to CRAFT MCP |
 | `reference/batch-and-embeddings.md` | Batch API (evals) and embeddings (RAG over schema docs) |
 | `reference/craft-integration.md` | The CRAFT-over-MCP + Token Factory architecture, end to end |
+| `reference/proxy-setup.md` | Install claude-codex-nebius-proxy: TUI installer, Claude Code + Codex wiring |
 | `reference/troubleshooting.md` | Common errors and fixes |
 | `examples/` | Runnable Python: quickstart, LiteLLM, function calling, LangGraph+CRAFT |
 
