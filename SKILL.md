@@ -2,15 +2,17 @@
 name: tokenfactory
 description: >-
   Use Nebius Token Factory for LLM inference in the Emergence × Nebius Enterprise
-  Agent Hackathon. Covers first-time setup (getting an API key/credits, storing
-  the key securely in the shell), the OpenAI-compatible endpoint, picking a model
-  (Nemotron-3 Super 120B default), function/tool calling to drive CRAFT MCP tools,
-  streaming, batch, embeddings, LiteLLM/LangChain/LangGraph wiring, installing the
-  claude-codex-nebius-proxy to route Claude Code or the Codex CLI, and
-  troubleshooting. Trigger whenever a
-  user is new to Token Factory, needs an API key set up, needs to call an LLM,
-  configure inference, pick a model, do function calling, wire up Claude Code or
-  Codex, or connect a reasoning model to the CRAFT data platform.
+  Agent Hackathon. Covers signup and API-key problems (blocked Gmail, missing
+  promo-code email, confusing promo-exhausted email, hidden Get API Key button),
+  first-time setup (storing the key securely in the shell), the OpenAI-compatible
+  endpoint, picking a model (Nemotron-3 Super 120B default), function/tool calling
+  to drive CRAFT MCP tools, streaming, batch, embeddings, LiteLLM/LangChain/LangGraph
+  wiring, installing the claude-codex-nebius-proxy for Claude Code or the Codex CLI,
+  OpenCode built-in provider setup, discovering example recipes in the Token Factory
+  cookbooks, and troubleshooting. Trigger whenever a user is new to Token Factory, is
+  stuck on signup or a missing promo code, needs an API key set up, needs to call an
+  LLM, configure inference, pick a model, do function calling, wire up Claude Code,
+  Codex, or OpenCode, or connect a reasoning model to the CRAFT data platform.
 ---
 
 # Nebius Token Factory — Skill
@@ -27,10 +29,20 @@ Your agent calls a Token Factory model; the model emits **tool calls**; your cod
 those to **CRAFT's MCP tools** (`get_schema`, `generate_sql`, `execute_query`,
 `generate_plotly_chart`, …) and feeds results back. See `reference/craft-integration.md`.
 
+**Helping a beginner ("vibe coder")?** Assume no terminal fluency. Give **one copy-paste
+block at a time** and verify it worked before moving on (e.g. `echo $NEBIUS_API_KEY` after
+the export, the §1 curl after that). Don't assume they know what an environment variable or
+a base URL is — say what each step does in one plain sentence. Reassure them: only three
+things ever change vs. plain OpenAI — **base URL, API key, model name**.
+
 ## 1. Get access (do this first)
 
 New to Token Factory? It's three steps: **get a key → store it securely → make one test call.**
 If the user doesn't have a key yet, walk them through this section before anything else.
+
+> **Signup not going smoothly?** (form won't load, Gmail rejected, no promo-code email,
+> a confusing "promo code exhausted" email, can't find the Get API Key button) —
+> every known signup gotcha and its workaround is in `reference/signup-help.md`.
 
 1. Claim credits at **https://dev.nebius.com/builders** (apply early — approval can lag).
 2. Log in to the Token Factory dashboard and create/copy your **API key**.
@@ -106,8 +118,8 @@ Minimal loop and a full LangGraph example: `reference/function-calling.md` and
 ## 5. Identify the user's stack, then wire it
 
 Before giving setup instructions, figure out which of these the user is on — ask if it isn't
-obvious from context ("Are you writing your own agent in Python/JS, or using Claude Code or
-the Codex CLI?"). The setup differs:
+obvious from context ("Are you writing your own agent in Python/JS, or using Claude Code,
+the Codex CLI, or OpenCode?"). The setup differs:
 
 | Stack | Wiring |
 |---|---|
@@ -116,6 +128,7 @@ the Codex CLI?"). The setup differs:
 | **Own agent — LangChain / LangGraph** | `ChatOpenAI(base_url=..., api_key=..., model=...)`. |
 | **Claude Code** | Claude Code speaks Anthropic's `/v1/messages`, not OpenAI — route through a local proxy. Install walkthrough: `reference/proxy-setup.md`; quick reference: `reference/api.md` → "CLI routing". |
 | **Codex CLI** | Same proxy, plus `~/.codex/config.toml` with `wire_api = "responses"`. Install walkthrough: `reference/proxy-setup.md`. |
+| **OpenCode** | **No proxy needed** — Nebius Token Factory is a built-in provider: run `/connect`, search "Nebius Token Factory", paste the key, then `/models` to pick one. Details: `reference/api.md` → "OpenCode". |
 
 **Secure key handling on every path:** the key lives in the `NEBIUS_API_KEY` environment
 variable (§1). CLI configs should reference it via `env_key` (Codex) or the proxy's environment —
@@ -123,28 +136,58 @@ never paste the raw key into a config file, script, or repo.
 
 Copy-paste snippets for each: `reference/api.md`. Runnable examples: `examples/`.
 
-## 6. When stuck
+## 6. Find working examples (don't build from scratch)
 
-`reference/troubleshooting.md` covers auth/401, wrong base URL, model-not-found,
-rate limits, tool-call JSON issues, and context-length errors.
+Before writing anything from first principles, check the cookbooks — ~50 MIT-licensed
+recipes (agents on 7 frameworks, RAG, tool calling, integrations) that are usually two
+minutes from "adapt this":
+
+- **Browse without cloning:** https://opencolin.github.io/nebius-ecosystem-cookbook/cookbook/
+  — every recipe rendered, notebooks with outputs visible, filter/search.
+- **Clone and run:** https://github.com/nebius/token-factory-cookbook
+
+Task-to-recipe map and more resources: `reference/cookbooks.md`.
+
+## 7. When stuck — run the checklist
+
+If a user is stuck and it's unclear where, walk this in order — each step verifies the one
+before it. Stop at the first "no" and fix there:
+
+1. **Signed up?** With a non-Gmail address, promo code in hand → `reference/signup-help.md`
+2. **Right email?** The Token Factory "here's your code" email — not the AI Cloud
+   "exhausted" one → `reference/signup-help.md`
+3. **Key copied?** From the dashboard (widen the window if the button is missing) → §1
+4. **Key stored?** `echo $NEBIUS_API_KEY` prints it, and it's persisted in the shell
+   profile → §1
+5. **Key works?** `curl -s "$NEBIUS_BASE_URL/models" -H "Authorization: Bearer
+   $NEBIUS_API_KEY"` returns a model list → §1; errors → `reference/troubleshooting.md`
+6. **Tool wired?** Own agent → §2; Claude Code / Codex → `reference/proxy-setup.md`;
+   OpenCode → `reference/api.md` § OpenCode
+7. **First call succeeded?** If yes, stop debugging setup — start from a cookbook recipe
+   (`reference/cookbooks.md`) instead of a blank file.
+
+For specific errors (401, model-not-found, rate limits, tool-call JSON, context length):
+`reference/troubleshooting.md`.
 
 ## Reference map
 
 | File | What's in it |
 |------|--------------|
-| `reference/api.md` | Endpoints, auth, streaming, curl/Python/JS, LiteLLM, LangChain, CLI routing |
+| `reference/signup-help.md` | Signup gotchas & workarounds: Gmail block, flaky form, promo emails, hidden key button |
+| `reference/api.md` | Endpoints, auth, streaming, curl/Python/JS, LiteLLM, LangChain, OpenCode, CLI routing |
 | `reference/models.md` | Recommended models, IDs, when to use which |
 | `reference/function-calling.md` | Tool-calling loop, schema format, dispatching to CRAFT MCP |
 | `reference/batch-and-embeddings.md` | Batch API (evals) and embeddings (RAG over schema docs) |
 | `reference/craft-integration.md` | The CRAFT-over-MCP + Token Factory architecture, end to end |
 | `reference/proxy-setup.md` | Install claude-codex-nebius-proxy: TUI installer, Claude Code + Codex wiring |
+| `reference/cookbooks.md` | Discover examples: cookbook task-to-recipe map, browsable mirror, awesome-nebius |
 | `reference/troubleshooting.md` | Common errors and fixes |
 | `examples/` | Runnable Python: quickstart, LiteLLM, function calling, LangGraph+CRAFT |
 
 ## Related resources
 
 - **Token Factory Cookbook** — 50 recipes / 27 notebooks: https://github.com/nebius/token-factory-cookbook
-- **Ecosystem cookbook mirror** — https://github.com/opencolin/nebius-ecosystem-cookbook
+- **Browsable cookbook mirror** (rendered notebooks + search): https://opencolin.github.io/nebius-ecosystem-cookbook/cookbook/
 - **awesome-nebius** — curated Nebius resources: https://github.com/opencolin/awesome-nebius
 - **Claude Code / Codex → Nebius proxy** — https://github.com/opencolin/claude-codex-nebius-proxy
 - **openclaw-nebius-plugin** — https://github.com/opencolin/openclaw-nebius-plugin
