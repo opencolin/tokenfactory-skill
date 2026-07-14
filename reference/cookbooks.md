@@ -43,6 +43,6 @@ browsable mirror.
 - **The notebooks show real outputs** on the mirror — you can judge whether a pattern does
   what you need before running anything.
 - **Combine with this skill:** the cookbook teaches the pattern; this skill's
-  `function-calling.md` + `craft-integration.md` show how to aim it at CRAFT.
+  `function-calling.md` + `mcp-integration.md` show how to aim it at your own tools.
 - Recipes are MIT-licensed — adapting them for your hackathon project is exactly what
   they're for. Model IDs inside older recipes may lag; trust `GET /models` (see `models.md`).

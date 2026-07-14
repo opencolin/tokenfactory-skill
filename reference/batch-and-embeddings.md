@@ -4,8 +4,8 @@ Both are OpenAI-shaped on Token Factory.
 
 ## Embeddings (RAG over schema docs / glossary)
 
-Useful for retrieving the right table/column or business-term definition before you ask CRAFT to
-generate SQL — improves accuracy on wide enterprise schemas.
+Useful for retrieving the right table/column or business-term definition before your agent
+queries a wide enterprise schema — improves accuracy.
 
 ```python
 from openai import OpenAI
@@ -21,8 +21,8 @@ vectors = [d.embedding for d in emb.data]
 ```
 
 Pattern: embed your schema descriptions / glossary once, store in any vector store
-(FAISS, Chroma, in-memory), then retrieve the top-k relevant snippets to include in the prompt
-before calling `generate_sql`.
+(FAISS, Chroma, in-memory), then retrieve the top-k relevant snippets to include in the
+prompt before the model queries your data tools.
 
 ## Batch API (evaluations)
 

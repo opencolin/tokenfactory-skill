@@ -36,7 +36,8 @@ Getting the "exhausted" email does **not** mean your Token Factory credits faile
 
 ## Getting your API key from the dashboard
 
-1. Redeem the promo code / log in to the Token Factory console.
+1. Redeem the promo code / log in to the Token Factory console:
+   **https://tokenfactory.nebius.com/**
 2. Click **"Get API Key"** (or **"Add Key"**) and copy the key.
 3. **Can't find the button?** It can sit off-screen at narrow window widths (about
    half-screen). **Maximize or widen your browser window** and it will appear.
