@@ -11,7 +11,7 @@ curl "$NEBIUS_BASE_URL/models" -H "Authorization: Bearer $NEBIUS_API_KEY"
 
 | Use case | Model ID | Why |
 |---|---|---|
-| **Agentic tool use (default)** | `nvidia/nemotron-3-super-120b-a12b` | Nemotron-3 Super 120B, ~12B active, **1M context**, **native function calling** — the model the CRAFT workshop uses. Best all-round for agent loops that call MCP tools. |
+| **Agentic tool use (default)** | `nvidia/nemotron-3-super-120b-a12b` | Nemotron-3 Super 120B, ~12B active, **1M context**, **native function calling**. Best all-round for agent loops that call MCP tools. |
 | Long-context reasoning | `nvidia/nemotron-3-super-120b-a12b` | 1M context handles big schemas + long tool transcripts. |
 | Fast / cheap drafting | a smaller instruct model from `/models` (e.g. a Llama/Qwen 8–30B) | Use for cheap sub-steps; keep the 120B for the reasoning that matters. |
 | Alternative strong model | `moonshotai/Kimi-K2.6` | Strong general model available on Token Factory (seen in the proxy defaults). |

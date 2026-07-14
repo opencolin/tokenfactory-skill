@@ -118,7 +118,8 @@ llm = ChatOpenAI(
 )
 ```
 
-Bind CRAFT MCP tools with `llm.bind_tools([...])` — see `function-calling.md`.
+Bind tools with `llm.bind_tools([...])` — see `function-calling.md`; MCP tools via
+`langchain-mcp-adapters` — see `mcp-integration.md`.
 
 ## OpenCode
 
@@ -183,5 +184,4 @@ raw key into `config.toml`, launch scripts, or anything that could be committed 
 
 - Everything is OpenAI-shaped: `temperature`, `max_tokens`, `tools`, `tool_choice`,
   `response_format`, `stream` all behave as in the OpenAI SDK.
-- Confirm the exact base URL and any model-name casing from your dashboard / the hackathon guide
-  at https://www.emergence.ai/hackathon-checklist.
+- Confirm the exact base URL and any model-name casing from your dashboard / your event's guide.

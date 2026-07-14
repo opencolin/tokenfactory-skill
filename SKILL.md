@@ -1,18 +1,18 @@
 ---
 name: tokenfactory
 description: >-
-  Use Nebius Token Factory for LLM inference in the Emergence × Nebius Enterprise
-  Agent Hackathon. Covers signup and API-key problems (blocked Gmail, missing
+  Use Nebius Token Factory for LLM inference at Nebius-sponsored hackathons and
+  events. Covers signup and API-key problems (blocked Gmail, missing
   promo-code email, confusing promo-exhausted email, hidden Get API Key button),
   first-time setup (storing the key securely in the shell), the OpenAI-compatible
   endpoint, picking a model (Nemotron-3 Super 120B default), function/tool calling
-  to drive CRAFT MCP tools, streaming, batch, embeddings, LiteLLM/LangChain/LangGraph
+  to drive MCP tools, streaming, batch, embeddings, LiteLLM/LangChain/LangGraph
   wiring, installing the claude-codex-nebius-proxy for Claude Code or the Codex CLI,
   OpenCode built-in provider setup, discovering example recipes in the Token Factory
   cookbooks, and troubleshooting. Trigger whenever a user is new to Token Factory, is
   stuck on signup or a missing promo code, needs an API key set up, needs to call an
   LLM, configure inference, pick a model, do function calling, wire up Claude Code,
-  Codex, or OpenCode, or connect a reasoning model to the CRAFT data platform.
+  Codex, or OpenCode, or connect a reasoning model to MCP tools or a data platform.
 ---
 
 # Nebius Token Factory — Skill
@@ -21,13 +21,13 @@ Token Factory is Nebius's managed inference platform. It serves open models behi
 **OpenAI-compatible API**, so any agent framework that speaks OpenAI (or has a Nebius/OpenAI
 provider) can use it by changing three things: **base URL**, **API key**, and **model name**.
 
-In this hackathon, the pattern is:
+The core agent pattern:
 
-> **CRAFT (over MCP) handles data retrieval → your model on Token Factory does the reasoning and tool-calling.**
+> **Your model on Token Factory does the reasoning and tool-calling → your tools (often an MCP server) do the real work.**
 
 Your agent calls a Token Factory model; the model emits **tool calls**; your code dispatches
-those to **CRAFT's MCP tools** (`get_schema`, `generate_sql`, `execute_query`,
-`generate_plotly_chart`, …) and feeds results back. See `reference/craft-integration.md`.
+those to your tools — local functions, APIs, or an MCP server's tools — and feeds results
+back. See `reference/function-calling.md` and `reference/mcp-integration.md`.
 
 **Helping a beginner ("vibe coder")?** Assume no terminal fluency. Give **one copy-paste
 block at a time** and verify it worked before moving on (e.g. `echo $NEBIUS_API_KEY` after
@@ -45,7 +45,8 @@ If the user doesn't have a key yet, walk them through this section before anythi
 > every known signup gotcha and its workaround is in `reference/signup-help.md`.
 
 1. Claim credits at **https://dev.nebius.com/builders** (apply early — approval can lag).
-2. Log in to the Token Factory dashboard and create/copy your **API key**.
+2. Log in to the Token Factory console — **https://tokenfactory.nebius.com/** — and
+   create/copy your **API key**.
 3. Store it as an environment variable — **never hardcode it in source code, never commit it**:
 
    ```bash
@@ -109,11 +110,11 @@ embeddings — is standard OpenAI-shaped and documented in `reference/api.md`.
   model that reliably tool-calls for your loop; scale up only if reasoning quality needs it.
 - Full guidance + model IDs: `reference/models.md`.
 
-## 4. Function calling → CRAFT
+## 4. Function calling → your tools
 
-The whole game is: model proposes a tool call → you run the CRAFT MCP tool → return the result.
-Minimal loop and a full LangGraph example: `reference/function-calling.md` and
-`examples/function_calling_craft.py`.
+The whole game is: model proposes a tool call → you run the tool → return the result.
+Minimal loop: `reference/function-calling.md` and `examples/function_calling.py`.
+Tools on an MCP server: `reference/mcp-integration.md` and `examples/langgraph_mcp_agent.py`.
 
 ## 5. Identify the user's stack, then wire it
 
@@ -176,13 +177,13 @@ For specific errors (401, model-not-found, rate limits, tool-call JSON, context 
 | `reference/signup-help.md` | Signup gotchas & workarounds: Gmail block, flaky form, promo emails, hidden key button |
 | `reference/api.md` | Endpoints, auth, streaming, curl/Python/JS, LiteLLM, LangChain, OpenCode, CLI routing |
 | `reference/models.md` | Recommended models, IDs, when to use which |
-| `reference/function-calling.md` | Tool-calling loop, schema format, dispatching to CRAFT MCP |
+| `reference/function-calling.md` | Tool-calling loop, schema format, dispatching to your tools |
 | `reference/batch-and-embeddings.md` | Batch API (evals) and embeddings (RAG over schema docs) |
-| `reference/craft-integration.md` | The CRAFT-over-MCP + Token Factory architecture, end to end |
+| `reference/mcp-integration.md` | Driving MCP-server tools from a Token Factory model, end to end |
 | `reference/proxy-setup.md` | Install claude-codex-nebius-proxy: TUI installer, Claude Code + Codex wiring |
 | `reference/cookbooks.md` | Discover examples: cookbook task-to-recipe map, browsable mirror, awesome-nebius |
 | `reference/troubleshooting.md` | Common errors and fixes |
-| `examples/` | Runnable Python: quickstart, LiteLLM, function calling, LangGraph+CRAFT |
+| `examples/` | Runnable Python: quickstart, LiteLLM, function calling, LangGraph+MCP |
 
 ## Related resources
 

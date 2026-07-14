@@ -15,7 +15,7 @@
 | `429` / rate limit | Too many concurrent requests | Add retry with backoff; cap concurrency (semaphore); use the Batch API for bulk evals. |
 | Context length exceeded | Oversized tool results in history | Summarize/paginate results; pass artifact references not raw rows; trim old tool messages. |
 | Model returns invalid tool-call JSON | Occasional malformed args | `try/except` around `json.loads`; on failure return an error tool-result so the model retries. |
-| Model writes SQL instead of calling `generate_sql` | Weak system prompt | Instruct explicitly: "Always use `generate_sql`; never hand-write SQL." Consider `tool_choice` to force it. |
+| Model answers from memory instead of calling tools | Weak system prompt | Instruct explicitly which tool to use for which job ("always use X; never guess"); consider `tool_choice` to force a specific tool. |
 | Claude Code / Codex won't use Nebius | CLIs are Anthropic-shaped | Route through a proxy (`opencolin/claude-codex-nebius-proxy`, `claude-code-router`, or LiteLLM proxy) — install walkthrough in `proxy-setup.md`. (OpenCode needs no proxy — see `api.md` → "OpenCode".) |
 | Streaming shows nothing | Consuming deltas wrong | Read `chunk.choices[0].delta.content` (may be `None` on some chunks). |
 
@@ -30,6 +30,5 @@ If that returns a model list, your key + base URL are correct and the problem is
 
 ## Where to get help during the event
 
-- Live support: **EmergenceAI Community Slack** `#help`
-- Guide: https://www.emergence.ai/hackathon-checklist
+- Live support: your event's community Slack `#help`
 - Nebius recipes: https://github.com/nebius/token-factory-cookbook
